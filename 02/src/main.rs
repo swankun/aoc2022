@@ -4,17 +4,6 @@ use std::io::{self, BufRead, BufReader};
 use std::collections::HashMap;
 use nalgebra::{Matrix3, Vector3};
 
-fn get_input(filename: &str) -> io::Lines<BufReader<File>> { 
-    let path = Path::new(filename);
-    let display = path.display();
-
-    let file = match File::open(&path) {
-        Err(why) => panic!("Failed to open {}: {}", display, why),
-        Ok(file) => file,
-    };
-    io::BufReader::new(file).lines()
-}
-
 fn construct_choices() -> HashMap<char, Vector3<i32>> {
     let rock = || Vector3::new(1,0,0);
     let papaer = || Vector3::new(0,1,0);
@@ -27,14 +16,6 @@ fn construct_choices() -> HashMap<char, Vector3<i32>> {
     choice.insert('Y', papaer());
     choice.insert('Z', scissor());
     choice
-}
-
-fn tuple_from_delimited_pair(s: String, d: char)  -> (char, char) {
-    let mut t = s.split(d).take(2);
-    (
-        t.next().unwrap().chars().next().unwrap(),
-        t.next().unwrap().chars().next().unwrap()
-    )
 }
 
 fn main() {
@@ -52,25 +33,25 @@ fn main() {
         0,3,6,
         0,3,6
     ); // reward for win, lose, or draw based on second letter
-    
-    for line in get_input("input") {
-        if let Ok(game) = line {
-            let (a, b) = tuple_from_delimited_pair(game, ' ');
-            let opponent = choices.get(&a).unwrap();
-            let you = choices.get(&b).unwrap();
 
-            // Part 1
-            let outcome = opponent.dot(&(rule1 * you));
-            let chosen_play = you.dot(&(rule2*you));
-            total1 += outcome;
-            total1 += chosen_play;
+    let input = include_str!("../input");
+    for line in input.lines() {
+        let mut chars = line.chars();
+        let (a, b) = (chars.nth(0).unwrap(), chars.nth(1).unwrap());
+        let opponent = choices.get(&a).unwrap();
+        let you = choices.get(&b).unwrap();
 
-            // Part 2
-            let desired_outcome = rule3 * you;
-            let play_to_choose = rule1.transpose() * opponent - desired_outcome; 
-            total2 += desired_outcome.iter().next().unwrap();
-            total2 += play_to_choose.abs().argmin().0 as i32 + 1;
-        }
+        // Part 1
+        let outcome = opponent.dot(&(rule1 * you));
+        let chosen_play = you.dot(&(rule2*you));
+        total1 += outcome;
+        total1 += chosen_play;
+
+        // Part 2
+        let desired_outcome = rule3 * you;
+        let play_to_choose = rule1.transpose() * opponent - desired_outcome; 
+        total2 += desired_outcome.iter().next().unwrap();
+        total2 += play_to_choose.abs().argmin().0 as i32 + 1;
     }
     println!("{}", total1);
     println!("{}", total2);
