@@ -1,6 +1,3 @@
-use std::fs::File;
-use std::path::Path;
-use std::io::{self, BufRead, BufReader};
 use std::collections::HashMap;
 use nalgebra::{Matrix3, Vector3};
 
