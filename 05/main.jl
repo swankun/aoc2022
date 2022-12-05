@@ -45,10 +45,11 @@ crates = [
 
 for line in readlines("input")
   qty, from, to = parse.(Int, getindex(split(line, " "), [2,4,6]))
-  append!(crates[to], last(crates[from], qty))
+  tmp = Char[]
   for _ in 1:qty
-    pop!(crates[from])
+    push!(tmp, pop!(crates[from]))
   end
+  append!(crates[to], reverse(tmp))
 end
 
 @show res = [last(c) for c in crates] |> join
