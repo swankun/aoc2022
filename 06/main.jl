@@ -1,26 +1,13 @@
-function f(s::String)
-  chars = [c for c in s]
-  buf = Char[]
-  i = 0
-  while !isempty(chars)
-    push!(buf, popfirst!(chars))
-    i += 1
-    if length(buf) <= 14
-      continue
-    end
-    popfirst!(buf)
-    if allunique(buf)
-      println("found")
-      @show buf
-      @show i
-      break
-    end
+function f(s, index::Int=4)
+  if allunique(first(s, 4))
+    return index
+  else
+    f(Iterators.peel(s) |> last, index+1)
   end
 end
 
-
 function main()
   for line in readlines("input")
-    f(line)
+    @show f(line)
   end
 end
