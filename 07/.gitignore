@@ -1,2 +1,4 @@
 test/
-input.copy*
+*copy*
+results*
+sizes*
