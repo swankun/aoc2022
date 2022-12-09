@@ -42,5 +42,5 @@ function input(filename="example")
 end
 
 function process(traj::Matrix{T}) where {T <: Real}
-  map(vec, eachcol(traj[3:4, :])) |> unique
+  map(vec, eachcol(traj[end-1:end, :])) |> unique
 end
